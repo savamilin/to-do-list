@@ -1,0 +1,161 @@
+const btnSumbmit = document.querySelector('.btn')
+const inputValue = document.getElementById('task')
+console.log(btnSumbmit)
+
+const removeCollection = document.querySelector('.collection')
+console.log(removeCollection)
+
+
+const clearTask = document.querySelector('.clear-tasks')
+console.log(clearTask)
+
+
+const filter = document.getElementById('filter')
+
+
+filter.addEventListener('keyup', function(e) {
+
+
+    console.log(e)
+
+    const collectionValue = document.querySelectorAll('.collection-item')
+    console.log('collectionValue', collectionValue)
+
+    var value = e.target.value
+
+    collectionValue.forEach(function(item) {
+        console.log('item.textContent', item.textContent)
+        if (item.textContent.indexOf(value) != -1) {
+
+            console.log(item.textContent.indexOf(value))
+            item.style.display = 'block'
+        } else {
+            console.log(item.textContent.indexOf(value))
+            item.style.display = 'none'
+
+        }
+    })
+
+})
+
+// when page is loaded we put text from localstorage
+document.addEventListener('DOMContentLoaded', function() {
+
+    var tasks = localStorageArray()
+
+
+    tasks.forEach(function(task) {
+        createElement(task)
+    })
+})
+
+
+
+function localStorageArray() {
+
+    var tasks = JSON.parse(localStorage.getItem('tasks'))
+
+    if (!tasks) {
+        tasks = [];
+        localStorage.setItem('tasks', JSON.stringify(tasks))
+    }
+
+    return tasks
+}
+
+btnSumbmit.addEventListener('click', function(e) {
+
+
+    if (inputValue.value != '') {
+
+
+        var storageArray = localStorageArray()
+
+        storageArray.push(inputValue.value)
+
+        localStorage.setItem('tasks', JSON.stringify(storageArray))
+
+
+        createElement(inputValue.value)
+
+        inputValue.value = ''
+    }
+
+    e.preventDefault()
+})
+
+
+removeCollection.addEventListener('click', function(e) {
+
+
+
+    if (e.target.classList.contains('fas')) {
+
+
+        if (confirm('Are you sure')) {
+
+
+            e.target.parentElement.parentElement.remove()
+            console.log(e.target)
+            var storageArray = localStorageArray()
+
+            console.log(storageArray)
+
+            storageArray.forEach(function(item, index) {
+
+                if (e.target.parentElement.parentElement.textContent === item) {
+                    storageArray.splice(index, 1)
+                }
+
+
+            })
+            console.log(storageArray)
+            localStorage.setItem('tasks', JSON.stringify(storageArray))
+        }
+    }
+})
+
+
+clearTask.addEventListener('click', clear)
+
+// clear tasks
+function clear() {
+
+    if (confirm('Are you sure')) {
+        const removesCollection = document.querySelectorAll('.collection-item')
+        console.log(removesCollection)
+
+
+        removesCollection.forEach(function(item) {
+
+            // clear element
+            item.remove()
+                // clear from localStorege
+            localStorage.clear()
+            console.log(item)
+        })
+    }
+
+
+}
+
+
+
+
+// create elements
+function createElement(value) {
+
+    const li = document.createElement('li')
+    li.className = 'collection-item delete'
+    li.innerHTML = value
+    console.log(li)
+
+    const span = document.createElement('span')
+    span.innerHTML = '<i class="fas fa-sun"></i>'
+    span.style.float = 'right'
+
+    const ul = document.querySelector('.collection')
+    li.appendChild(span)
+    ul.appendChild(li)
+
+}
